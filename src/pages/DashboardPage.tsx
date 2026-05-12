@@ -1,12 +1,19 @@
 import { PageSection, Title, Grid, GridItem } from "@patternfly/react-core";
 import { useQuery } from "@tanstack/react-query";
 import { kpisApi } from "../api/kpis";
+import { agentsApi } from "../api/agents";
 import { KpiCard } from "../components/KpiCard";
+import { AgentStateDonut } from "../components/AgentStateDonut";
 
 export function DashboardPage() {
     const { data: kpis } = useQuery({
         queryKey: ["kpis"],
         queryFn: () => kpisApi.getFleetKpis(),
+    });
+
+    const { data: agentsData } = useQuery({
+        queryKey: ["agents"],
+        queryFn: () => agentsApi.list({ per_page: 50 }),
     });
 
     return (
@@ -31,6 +38,9 @@ export function DashboardPage() {
                             value={kpis ? `${kpis.average_attestation_latency_ms.toFixed(0)} ms` : "—"} />
                     </GridItem>
                 </Grid>
+            </PageSection>
+            <PageSection>
+                <AgentStateDonut agents={agentsData?.items ?? []} />
             </PageSection>
         </>
     );

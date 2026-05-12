@@ -9,27 +9,44 @@ export type AgentState =
     | "terminated"
     | "invalid_quote"
     | "tenant_failed"
-    | "timeout";
-
-export type ApiVersion = "v2_pull" | "v3_push";
-
-export interface AgentHardwareInfo {
-    tpm_model: string;
-    tpm_version: string;
-}
+    | "timeout"
+    | "PASS"
+    | "FAIL"
+    | "TIMEOUT";
 
 export interface Agent {
-    uuid: string;
-    ip_address: string;
-    hostname: string;
+    id: string;
+    ip: string;
+    port: number;
     state: AgentState;
-    verifier_id: string;
-    registrar_id: string;
+    attestation_mode: string;
     last_attestation: string;
-    consecutive_failures: number;
-    registration_date: string;
-    api_version: ApiVersion;
-    hardware_info: AgentHardwareInfo;
+    failure_count: number;
+    assigned_policy: string | null;
+    mb_policy: string | null;
+}
+
+export interface AgentDetail extends Agent {
+    aik_tpm: string;
+    ek_tpm: string;
+    tpm_policy: string;
+    regcount: number;
+    accept_tpm_encryption_algs: string[];
+    accept_tpm_hash_algs: string[];
+    accept_tpm_signing_algs: string[];
+    ima_pcrs: string[];
+    ima_policy: string | null;
+    certificates: AgentCertificate[];
+}
+
+export interface AgentCertificate {
+    type: string;
+    status: string;
+    expiry_category: string;
+    not_after: string;
+    days_until_expiry: number;
+    chain_valid: boolean | null;
+    validation_status: string;
 }
 
 export interface AgentListParams {
@@ -39,8 +56,6 @@ export interface AgentListParams {
     sort_order?: "asc" | "desc";
     state?: AgentState;
     search?: string;
-    datacenter?: string;
-    ip_range?: string;
 }
 
 export interface AgentPcrValues {

@@ -1,6 +1,6 @@
 import { apiGet, apiPost } from "./client";
 import type {
-    Agent, AgentListParams, AgentPcrValues,
+    Agent, AgentDetail, AgentListParams, AgentPcrValues,
     ImaLogResponse, BootLogResponse, PaginatedResponse,
 } from "../types";
 import type { Certificate } from "../types/certificate";
@@ -10,8 +10,8 @@ export const agentsApi = {
         return apiGet<PaginatedResponse<Agent>>("/agents", params as Record<string, string | number | undefined>);
     },
 
-    get(agentId: string): Promise<Agent> {
-        return apiGet<Agent>(`/agents/${agentId}`);
+    get(agentId: string): Promise<AgentDetail> {
+        return apiGet<AgentDetail>(`/agents/${agentId}`);
     },
 
     search(query: string): Promise<Agent[]> {

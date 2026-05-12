@@ -1,7 +1,7 @@
 export type { Severity } from "./severity";
 export type {
-    Agent, AgentState, AgentListParams, AgentPcrValues,
-    AgentHardwareInfo, ApiVersion,
+    Agent, AgentDetail, AgentState, AgentListParams, AgentPcrValues,
+    AgentCertificate,
     ImaLogEntry, BootLogEntry, ImaLogResponse, BootLogResponse,
 } from "./agent";
 export type {

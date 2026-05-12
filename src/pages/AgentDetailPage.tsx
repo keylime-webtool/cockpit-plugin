@@ -5,6 +5,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { agentsApi } from "../api/agents";
 import { StatusBadge } from "../components/StatusBadge";
+import type { AgentDetail } from "../types";
 
 interface AgentDetailPageProps {
     id: string;
@@ -13,7 +14,7 @@ interface AgentDetailPageProps {
 export function AgentDetailPage({ id }: AgentDetailPageProps) {
     const { data: agent, isLoading } = useQuery({
         queryKey: ["agent", id],
-        queryFn: () => agentsApi.get(id),
+        queryFn: () => agentsApi.get(id) as Promise<AgentDetail>,
     });
 
     if (isLoading || !agent) {
@@ -27,17 +28,17 @@ export function AgentDetailPage({ id }: AgentDetailPageProps) {
     return (
         <>
             <PageSection variant="default">
-                <Title headingLevel="h1">{agent.hostname}</Title>
+                <Title headingLevel="h1">Agent {agent.id}</Title>
             </PageSection>
             <PageSection>
                 <DescriptionList>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>UUID</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.uuid}</DescriptionListDescription>
+                        <DescriptionListTerm>ID</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.id}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>IP Address</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.ip_address}</DescriptionListDescription>
+                        <DescriptionListTerm>IP:Port</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.ip}:{agent.port}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
                         <DescriptionListTerm>State</DescriptionListTerm>
@@ -46,24 +47,32 @@ export function AgentDetailPage({ id }: AgentDetailPageProps) {
                         </DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>API Version</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.api_version}</DescriptionListDescription>
+                        <DescriptionListTerm>Mode</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.attestation_mode}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>Verifier</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.verifier_id}</DescriptionListDescription>
+                        <DescriptionListTerm>Failure Count</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.failure_count}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>Registrar</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.registrar_id}</DescriptionListDescription>
+                        <DescriptionListTerm>Last Attestation</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.last_attestation}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>Consecutive Failures</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.consecutive_failures}</DescriptionListDescription>
+                        <DescriptionListTerm>Registration Count</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.regcount}</DescriptionListDescription>
                     </DescriptionListGroup>
                     <DescriptionListGroup>
-                        <DescriptionListTerm>Registration Date</DescriptionListTerm>
-                        <DescriptionListDescription>{agent.registration_date}</DescriptionListDescription>
+                        <DescriptionListTerm>TPM Encryption Algorithms</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.accept_tpm_encryption_algs?.join(", ")}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                    <DescriptionListGroup>
+                        <DescriptionListTerm>TPM Hash Algorithms</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.accept_tpm_hash_algs?.join(", ")}</DescriptionListDescription>
+                    </DescriptionListGroup>
+                    <DescriptionListGroup>
+                        <DescriptionListTerm>TPM Signing Algorithms</DescriptionListTerm>
+                        <DescriptionListDescription>{agent.accept_tpm_signing_algs?.join(", ")}</DescriptionListDescription>
                     </DescriptionListGroup>
                 </DescriptionList>
             </PageSection>

@@ -51,7 +51,7 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, label }: StatusBadgeProps) {
-    const variant = STATE_COLORS[status] ?? "grey";
+    const variant = STATE_COLORS[status.toLowerCase()] ?? "grey";
     return (
         <Label color={mapColor(variant)}>
             {label ?? status.replace(/_/g, " ")}

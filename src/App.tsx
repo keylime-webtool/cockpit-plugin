@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Page, PageSection } from "@patternfly/react-core";
+import { Page, PageSection, PageSidebar, PageSidebarBody } from "@patternfly/react-core";
 import { usePageLocation } from "./hooks/usePageLocation";
 import { useCockpitAuth } from "./store/cockpitAuth";
 import { useVisualizationStore } from "./store/visualizationStore";
@@ -100,7 +100,13 @@ export function App() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Page masthead={<NavigationMenu />}>
+            <Page sidebar={
+                <PageSidebar>
+                    <PageSidebarBody>
+                        <NavigationMenu />
+                    </PageSidebarBody>
+                </PageSidebar>
+            }>
                 <AppRouter />
             </Page>
         </QueryClientProvider>

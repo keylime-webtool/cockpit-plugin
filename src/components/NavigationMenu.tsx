@@ -25,7 +25,7 @@ export function NavigationMenu() {
     const currentPage = location.path[0] ?? "";
 
     return (
-        <Nav variant="horizontal">
+        <Nav>
             <NavList>
                 {NAV_ITEMS.map((item) => (
                     <NavItem

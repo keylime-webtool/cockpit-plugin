@@ -1,0 +1,37 @@
+{
+  "name": "cockpit-keylime-webtool",
+  "version": "0.1.0",
+  "description": "Cockpit plugin for Keylime remote attestation monitoring",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "typecheck": "tsc",
+    "lint": "eslint --ext .ts,.tsx src/",
+    "dev-install": "ln -sfn $(pwd)/dist /usr/share/cockpit/keylime"
+  },
+  "dependencies": {
+    "@patternfly/patternfly": "^6.4.0",
+    "@patternfly/react-core": "^6.4.3",
+    "@patternfly/react-icons": "^6.4.0",
+    "@patternfly/react-table": "^6.4.3",
+    "@tanstack/react-query": "^5.100.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "esbuild": "^0.28.0",
+    "esbuild-sass-plugin": "^3.7.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "typescript": "~5.9.3"
+  },
+  "license": "Apache-2.0"
+}

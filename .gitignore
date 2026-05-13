@@ -3,3 +3,11 @@ dist/
 coverage/
 *.tsbuildinfo
 .eslintcache
+*.tar.xz
+*.rpm
+*.spec
+!packaging/*.spec.in
+rpmbuild/
+output/
+build/
+runtime-npm-modules.txt

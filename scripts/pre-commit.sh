@@ -6,6 +6,7 @@
 #   - ESLint
 #   - Build (esbuild)
 #   - Security audit (npm audit)
+#   - RPM packaging (make rpm + content verification)
 #
 # Usage:
 #   bash scripts/pre-commit.sh          # run all checks
@@ -15,7 +16,8 @@
 #   ln -sf ../../scripts/pre-commit.sh .git/hooks/pre-commit
 
 # ── Resolve repo root ────────────────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_REAL="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_REAL")" && pwd)"
 cd "$SCRIPT_DIR/.." || exit 1
 
 # ── Colours (disabled when stdout is not a terminal) ──────────────────
@@ -87,6 +89,43 @@ if [ "$QUICK" -eq 1 ]; then
     skip_step "Security Audit" "--quick mode"
 else
     run_step "Security Audit" npm audit --omit=dev
+fi
+
+# ── RPM Packaging ────────────────────────────────────────────────────
+if [ "$QUICK" -eq 1 ]; then
+    skip_step "RPM Packaging" "--quick mode"
+elif ! command -v rpmbuild &> /dev/null; then
+    skip_step "RPM Packaging" "rpmbuild not installed"
+else
+    printf "  %-20s" "RPM Packaging"
+    if make rpm &> /dev/null; then
+        rpm_file=$(ls -1 cockpit-keylime-webtool-*.rpm 2>/dev/null | head -1)
+        if [ -n "$rpm_file" ]; then
+            rpm_contents=$(rpm -qlp "$rpm_file" 2>/dev/null)
+            missing=""
+            for f in manifest.json index.html index.js; do
+                if ! echo "$rpm_contents" | grep -q "$f"; then
+                    missing="$missing $f"
+                fi
+            done
+            if [ -z "$missing" ]; then
+                echo -e "${GREEN}OK${RESET}"
+                ((passed++))
+            else
+                echo -e "${RED}FAIL${RESET} (missing:$missing)"
+                ((failed++))
+            fi
+        else
+            echo -e "${RED}FAIL${RESET} (RPM file not found)"
+            ((failed++))
+        fi
+    else
+        echo -e "${RED}FAIL${RESET}"
+        ((failed++))
+    fi
+    rm -f cockpit-keylime-webtool-*.rpm cockpit-keylime-webtool-*.tar.xz
+    rm -f cockpit-keylime-webtool.spec runtime-npm-modules.txt
+    rm -rf rpmbuild/ output/ build/
 fi
 
 echo ""

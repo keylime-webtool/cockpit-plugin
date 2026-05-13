@@ -28,8 +28,21 @@ npm run build                         # production build (dist/)
 npm run watch                         # dev build with file watching
 npm run typecheck                     # TypeScript type check (tsc --noEmit)
 npm run lint                          # ESLint
-sudo ln -sfn $(pwd)/dist /usr/share/cockpit/keylime   # dev-install symlink
+make devel-install                    # symlink dist/ to ~/.local/share/cockpit/keylime
+make devel-uninstall                  # remove dev symlink
 ```
+
+## Packaging (RPM)
+
+```bash
+make                                  # build dist/ (production)
+make dist                             # create release tarball (.tar.xz)
+make rpm                              # build binary RPM locally
+make srpm                             # build source RPM
+make clean                            # remove all build artifacts
+```
+
+The spec template lives at `packaging/cockpit-keylime-webtool.spec.in`. The Makefile renders it with the version (from `git describe`) and bundled npm Provides.
 
 ## Tech Stack
 

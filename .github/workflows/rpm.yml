@@ -1,0 +1,59 @@
+name: RPM Packaging
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rpm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install RPM build tools
+        run: sudo apt-get update && sudo apt-get install -y rpm
+
+      - name: Build RPM
+        run: make rpm
+
+      - name: Verify RPM contents
+        run: |
+          RPM_FILE=$(ls -1 cockpit-keylime-webtool-*.rpm | head -1)
+          echo "Built RPM: $RPM_FILE"
+          echo ""
+          echo "=== RPM file list ==="
+          rpm -qlp "$RPM_FILE"
+          echo ""
+          echo "=== Verifying required files ==="
+          MISSING=""
+          for f in manifest.json index.html index.js index.css; do
+            if rpm -qlp "$RPM_FILE" | grep -q "$f"; then
+              echo "  OK: $f"
+            else
+              echo "  MISSING: $f"
+              MISSING="$MISSING $f"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::RPM is missing required files:$MISSING"
+            exit 1
+          fi
+          echo ""
+          echo "All required files present."
+
+      - name: Upload RPM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cockpit-keylime-webtool-rpm
+          path: cockpit-keylime-webtool-*.rpm

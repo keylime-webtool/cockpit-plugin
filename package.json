@@ -11,7 +11,9 @@
     "test": "vitest",
     "test:run": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "dev-install": "ln -sfn $(pwd)/dist /usr/share/cockpit/keylime"
+    "dev-install": "ln -sfn $(pwd)/dist /usr/share/cockpit/keylime",
+    "rpm": "make rpm",
+    "srpm": "make srpm"
   },
   "dependencies": {
     "@patternfly/patternfly": "^6.4.0",

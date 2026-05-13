@@ -21,3 +21,30 @@ jobs:
 
       - name: Run tests with coverage
         run: npm run test:coverage
+
+      - name: Report coverage
+        if: always()
+        run: |
+          set -eu
+          node -e "
+            const s = require('./coverage/coverage-summary.json').total;
+            const lines = [
+              '## Code Coverage',
+              '',
+              '| Metric | Coverage |',
+              '|--------|----------|',
+              '| **Statements** | **' + s.statements.pct + '%** |',
+              '| Branches | ' + s.branches.pct + '% |',
+              '| Functions | ' + s.functions.pct + '% |',
+              '| Lines | ' + s.lines.pct + '% |',
+              '',
+              '> ' + s.lines.covered + '/' + s.lines.total + ' lines covered',
+            ];
+            console.log(lines.join('\n'));
+          " >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/

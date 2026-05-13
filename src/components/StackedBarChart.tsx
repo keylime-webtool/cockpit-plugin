@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 
 interface StackedBarSeries {
     key: string;
@@ -14,14 +14,30 @@ interface StackedBarChartProps<T> {
     formatLabel?: (raw: string) => string;
 }
 
-const CHART_HEIGHT = 260;
+const CHART_HEIGHT = 280;
 const BAR_GAP = 2;
-const Y_AXIS_WIDTH = 45;
-const X_LABEL_HEIGHT = 40;
+const Y_AXIS_WIDTH = 50;
+const X_LABEL_HEIGHT = 50;
 const TOP_PADDING = 10;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StackedBarChart<T extends Record<string, any>>({ title, data, labelKey, series, formatLabel }: StackedBarChartProps<T>) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [containerWidth, setContainerWidth] = useState(1200);
+
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                setContainerWidth(entry.contentRect.width);
+            }
+        });
+        observer.observe(el);
+        setContainerWidth(el.clientWidth);
+        return () => observer.disconnect();
+    }, []);
+
     const { maxValue, ticks } = useMemo(() => {
         let max = 0;
         for (const item of data) {
@@ -41,26 +57,28 @@ export function StackedBarChart<T extends Record<string, any>>({ title, data, la
 
     if (data.length === 0) {
         return (
-            <div style={{ textAlign: "center", padding: "var(--pf-t--global--spacer--xl) 0", color: "var(--pf-t--global--color--status--info--default)" }}>
+            <div ref={containerRef} style={{ textAlign: "center", padding: "var(--pf-t--global--spacer--xl) 0", color: "var(--pf-t--global--color--status--info--default)" }}>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>&#x1F4CA;</div>
                 <div>No {title.toLowerCase()} data</div>
             </div>
         );
     }
 
-    const plotWidth = 800 - Y_AXIS_WIDTH;
+    const svgWidth = containerWidth;
+    const plotWidth = svgWidth - Y_AXIS_WIDTH;
     const plotHeight = CHART_HEIGHT - X_LABEL_HEIGHT - TOP_PADDING;
-    const barWidth = Math.max(4, (plotWidth / data.length) - BAR_GAP);
+    const barWidth = Math.max(1, (plotWidth / data.length) - BAR_GAP);
+
+    const labelStep = barWidth < 14 ? Math.ceil(14 / (barWidth + BAR_GAP)) : 1;
 
     return (
         <div style={{ padding: "var(--pf-t--global--spacer--md) 0" }}>
             <strong>{title}</strong>
-            <div style={{ overflowX: "auto", marginTop: "var(--pf-t--global--spacer--sm)" }}>
+            <div ref={containerRef} style={{ marginTop: "var(--pf-t--global--spacer--sm)" }}>
                 <svg
-                    width="100%"
+                    width={svgWidth}
                     height={CHART_HEIGHT}
-                    viewBox={`0 0 800 ${CHART_HEIGHT}`}
-                    preserveAspectRatio="xMinYMid meet"
+                    viewBox={`0 0 ${svgWidth} ${CHART_HEIGHT}`}
                     style={{ display: "block" }}
                 >
                     {ticks.map(tick => {
@@ -69,7 +87,7 @@ export function StackedBarChart<T extends Record<string, any>>({ title, data, la
                             <g key={tick}>
                                 <line
                                     x1={Y_AXIS_WIDTH} y1={y}
-                                    x2={800} y2={y}
+                                    x2={svgWidth} y2={y}
                                     stroke="var(--pf-t--global--border--color--default, #d2d2d2)"
                                     strokeDasharray="3 3"
                                 />
@@ -109,18 +127,20 @@ export function StackedBarChart<T extends Record<string, any>>({ title, data, la
                                         </rect>
                                     );
                                 })}
-                                <text
-                                    x={x + barWidth / 2}
-                                    y={CHART_HEIGHT - X_LABEL_HEIGHT + 14}
-                                    textAnchor="middle"
-                                    fontSize={10}
-                                    fill="var(--pf-t--global--text--color--subtle, #6a6e73)"
-                                    transform={`rotate(-45, ${x + barWidth / 2}, ${CHART_HEIGHT - X_LABEL_HEIGHT + 14})`}
-                                >
-                                    {formatLabel
-                                        ? formatLabel(String(item[labelKey]))
-                                        : String(item[labelKey])}
-                                </text>
+                                {i % labelStep === 0 && (
+                                    <text
+                                        x={x + barWidth / 2}
+                                        y={CHART_HEIGHT - X_LABEL_HEIGHT + 14}
+                                        textAnchor="end"
+                                        fontSize={10}
+                                        fill="var(--pf-t--global--text--color--subtle, #6a6e73)"
+                                        transform={`rotate(-45, ${x + barWidth / 2}, ${CHART_HEIGHT - X_LABEL_HEIGHT + 14})`}
+                                    >
+                                        {formatLabel
+                                            ? formatLabel(String(item[labelKey]))
+                                            : String(item[labelKey])}
+                                    </text>
+                                )}
                             </g>
                         );
                     })}

@@ -5,6 +5,7 @@ import { certificatesApi } from "../api/certificates";
 import { KpiCard } from "../components/KpiCard";
 import { DataTable, type ColumnDef } from "../components/DataTable";
 import { StatusBadge } from "../components/StatusBadge";
+import { ExpiryBarChart } from "../components/ExpiryBarChart";
 import type { Certificate } from "../types";
 
 const COLUMNS: ColumnDef<Certificate>[] = [
@@ -37,6 +38,11 @@ export function CertificatesPage() {
         queryFn: () => certificatesApi.list(),
     });
 
+    const { data: timeline } = useQuery({
+        queryKey: ["certificates", "timeline"],
+        queryFn: () => certificatesApi.getTimeline(),
+    });
+
     return (
         <>
             <PageSection variant="default">
@@ -57,6 +63,9 @@ export function CertificatesPage() {
                         <KpiCard title="Expired" value={summary?.expired ?? "—"} />
                     </GridItem>
                 </Grid>
+            </PageSection>
+            <PageSection>
+                <ExpiryBarChart data={timeline ?? []} />
             </PageSection>
             <PageSection>
                 <DataTable

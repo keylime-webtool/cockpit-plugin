@@ -22,17 +22,27 @@ const NAV_ITEMS: NavEntry[] = [
     { path: "settings", label: "Settings" },
 ];
 
+interface IntegrationResult {
+    services: import("../types").IntegrationService[];
+    backendLatencyMs: number;
+}
+
 function useConnectivityIssueCount(): number {
-    const { data: services, isError: backendDown } = useQuery({
+    const { data, isError: backendDown } = useQuery<IntegrationResult>({
         queryKey: ["integrations", "status"],
-        queryFn: () => performanceApi.getIntegrationStatus(),
+        queryFn: async () => {
+            const start = performance.now();
+            const services = await performanceApi.getIntegrationStatus();
+            const backendLatencyMs = Math.round(performance.now() - start);
+            return { services, backendLatencyMs };
+        },
         refetchInterval: 30_000,
         retry: false,
     });
 
     if (backendDown) return 1;
-    if (!services) return 0;
-    return services.filter((s) => s.status.toLowerCase() !== "up").length;
+    if (!data) return 0;
+    return data.services.filter((s) => s.status.toLowerCase() !== "up").length;
 }
 
 export function NavigationMenu() {

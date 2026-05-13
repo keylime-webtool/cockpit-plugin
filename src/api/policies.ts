@@ -1,11 +1,11 @@
 import { apiGet, apiPost, apiPut, apiDelete } from "./client";
 import type {
-    Policy, PolicyVersion, PolicyImpactResult, PaginatedResponse,
+    Policy, PolicyVersion, PolicyImpactResult,
 } from "../types";
 
 export const policiesApi = {
-    list(search?: string): Promise<PaginatedResponse<Policy>> {
-        return apiGet<PaginatedResponse<Policy>>("/policies", { search });
+    list(search?: string): Promise<Policy[]> {
+        return apiGet<Policy[]>("/policies", { search });
     },
 
     get(policyId: string): Promise<Policy> {

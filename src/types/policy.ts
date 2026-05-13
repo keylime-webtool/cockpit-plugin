@@ -21,15 +21,14 @@ export interface Policy {
     id: string;
     name: string;
     kind: PolicyKind;
-    content: string;
+    version: number;
     checksum: string;
-    hash_algorithm: HashAlgorithm;
-    versions: PolicyVersion[];
-    approval_state: ApprovalState;
-    drafter: string;
-    approver?: string;
-    created_date: string;
-    updated_date: string;
+    entry_count: number;
+    assigned_agents: number;
+    created_at: string;
+    updated_at: string;
+    updated_by: string;
+    content: string | null;
 }
 
 export type ImpactLevel = "unaffected" | "may_be_affected" | "will_fail";

@@ -60,12 +60,13 @@ export function DashboardPage() {
             <PageSection>
                 <div style={{ display: "flex", gap: "var(--pf-t--global--spacer--md)" }}>
                     <div style={{ flex: 1 }}>
-                        <KpiCard title="Total Agents" value={totalAgents ?? "—"} />
+                        <KpiCard title="Total Agents" value={totalAgents ?? "—"} linkTo="agents" />
                     </div>
                     <div style={{ flex: 1 }}>
                         <KpiCard
                             title="Attestation Success Rate"
                             value={summary ? `${summary.success_rate.toFixed(2)}%` : "—"}
+                            linkTo="attestations"
                         />
                     </div>
                     <div style={{ flex: 1 }}>
@@ -73,6 +74,7 @@ export function DashboardPage() {
                             title="Failed Attestations"
                             value={summary?.total_failed ?? "—"}
                             subtitle="in last 30d"
+                            linkTo="attestations"
                         />
                     </div>
                     <div style={{ flex: 1 }}>
@@ -80,6 +82,7 @@ export function DashboardPage() {
                             title="Timed-Out Attestations"
                             value={summary?.total_timed_out ?? "—"}
                             subtitle="in last 30d"
+                            linkTo="attestations"
                         />
                     </div>
                     <div style={{ flex: 1 }}>
@@ -89,6 +92,7 @@ export function DashboardPage() {
                             subtitle={alertSummary
                                 ? `${alertSummary.critical} critical, ${alertSummary.warnings} warnings`
                                 : undefined}
+                            linkTo="alerts"
                         />
                     </div>
                 </div>

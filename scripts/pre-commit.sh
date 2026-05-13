@@ -70,7 +70,16 @@ echo ""
 
 run_step "Type Check" npx tsc --noEmit
 run_step "Lint" npm run --silent lint
-run_step "Test" npm run --silent test:run
+printf "  %-20s" "Test + Coverage"
+rm -rf coverage/
+if npm run --silent test:coverage &> /dev/null; then
+    cov_pct=$(node -e "const s=require('./coverage/coverage-summary.json');console.log(s.total.statements.pct+'%')" 2>/dev/null)
+    echo -e "${GREEN}OK${RESET} (${cov_pct:-?} coverage)"
+    ((passed++))
+else
+    echo -e "${RED}FAIL${RESET}"
+    ((failed++))
+fi
 run_step "Build" npm run --silent build
 
 # ── Security audit ───────────────────────────────────────────────────

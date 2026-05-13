@@ -12,7 +12,7 @@ $(DIST_TEST): node_modules package.json build.js $(shell find src/ -type f)
 	NODE_ENV=production npm run build
 
 node_modules: package.json
-	npm ci --ignore-scripts
+	npm ci
 
 runtime-npm-modules.txt: node_modules
 	npm ls --omit=dev --parseable 2>/dev/null | \

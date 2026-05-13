@@ -17,7 +17,7 @@ function getClient(): cockpit.HttpInstance<string> {
     return httpClient;
 }
 
-function buildQueryString(params?: Record<string, string | number | undefined>): string {
+export function buildQueryString(params?: Record<string, string | number | undefined>): string {
     if (!params) return "";
     const entries = Object.entries(params)
         .filter((pair): pair is [string, string | number] => pair[1] !== undefined)

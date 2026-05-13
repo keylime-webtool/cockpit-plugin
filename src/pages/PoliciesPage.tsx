@@ -4,7 +4,7 @@ import { policiesApi } from "../api/policies";
 import { DataTable, type ColumnDef } from "../components/DataTable";
 import type { Policy } from "../types";
 
-function formatKind(kind: string): string {
+export function formatKind(kind: string): string {
     switch (kind) {
     case "ima": return "IMA";
     case "measured_boot": return "Measured Boot";

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { PageSection, Title } from "@patternfly/react-core";
 import { useQuery } from "@tanstack/react-query";
 import { performanceApi } from "../api/performance";
@@ -13,10 +14,25 @@ const COLUMNS: ColumnDef<IntegrationService>[] = [
 ];
 
 export function IntegrationsPage() {
-    const { data: services } = useQuery({
+    const { data: services, isError: backendDown, fetchStatus } = useQuery({
         queryKey: ["integrations", "status"],
         queryFn: () => performanceApi.getIntegrationStatus(),
+        refetchInterval: 10_000,
+        retry: false,
     });
+
+    const allServices: IntegrationService[] = useMemo(() => {
+        const backendEntry: IntegrationService = {
+            name: "keylime-webtool-backend",
+            endpoint: "http://127.0.0.1:8080",
+            status: backendDown ? "DOWN" as IntegrationService["status"] : "UP" as IntegrationService["status"],
+            latency_ms: undefined,
+        };
+        if (backendDown || fetchStatus === "fetching") {
+            return [backendEntry];
+        }
+        return [backendEntry, ...(services ?? [])];
+    }, [services, backendDown, fetchStatus]);
 
     return (
         <>
@@ -26,7 +42,7 @@ export function IntegrationsPage() {
             <PageSection>
                 <DataTable
                     columns={COLUMNS}
-                    items={services ?? []}
+                    items={allServices}
                     keyExtractor={(s) => s.name}
                 />
             </PageSection>

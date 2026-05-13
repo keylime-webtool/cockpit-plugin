@@ -54,7 +54,7 @@ export function StatusBadge({ status, label }: StatusBadgeProps) {
     const variant = STATE_COLORS[status.toLowerCase()] ?? "grey";
     return (
         <Label color={mapColor(variant)}>
-            {label ?? status.replace(/_/g, " ")}
+            {label ?? status.toUpperCase().replace(/_/g, " ")}
         </Label>
     );
 }

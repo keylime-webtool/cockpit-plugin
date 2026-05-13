@@ -1,9 +1,13 @@
 import { apiGet } from "./client";
-import type { IntegrationService, PerformanceSummary, SystemPerformance } from "../types";
+import type { IntegrationService, PerformanceSummary } from "../types";
 
 export const performanceApi = {
     getSummary(): Promise<PerformanceSummary> {
         return apiGet<PerformanceSummary>("/performance/summary");
+    },
+
+    getRegistrarMetrics(): Promise<PerformanceSummary> {
+        return apiGet<PerformanceSummary>("/performance/registrar");
     },
 
     getVerifierMetrics(): Promise<unknown> {
@@ -24,9 +28,5 @@ export const performanceApi = {
 
     getIntegrationStatus(): Promise<IntegrationService[]> {
         return apiGet<IntegrationService[]>("/integrations/status");
-    },
-
-    getSystemPerformance(): Promise<SystemPerformance> {
-        return apiGet<SystemPerformance>("/system/performance");
     },
 };

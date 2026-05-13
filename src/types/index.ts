@@ -26,7 +26,7 @@ export type {
 } from "./audit";
 export type {
     ApiResponse, PaginatedResponse, UserRole, User,
-    ServiceStatus, IntegrationService, PerformanceSummary, SystemPerformance,
+    ServiceStatus, IntegrationService, PerformanceSummary,
     FleetKpis, TimeRange,
 } from "./api";
 export { TIME_RANGES } from "./api";

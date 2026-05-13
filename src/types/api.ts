@@ -41,15 +41,9 @@ export interface PerformanceSummary {
     estimated_attestation_rate: number | null;
     capacity_utilization_pct: number | null;
     database_status: string;
-}
-
-export interface SystemPerformance {
-    cpu_percent: number;
-    memory_percent: number;
-    open_fds: number;
-    thread_count: number;
-    attestations_per_sec: number;
-    queue_depth: number;
+    registrar_reachable?: boolean;
+    registrar_latency_ms?: number | null;
+    registered_agent_count?: number;
 }
 
 export interface FleetKpis {

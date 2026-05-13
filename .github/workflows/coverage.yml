@@ -1,4 +1,4 @@
-name: Lint
+name: Test & Coverage
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,8 +19,5 @@ jobs:
 
       - run: npm ci
 
-      - name: TypeScript type check
-        run: npx tsc --noEmit
-
-      - name: ESLint
-        run: npm run lint
+      - name: Run tests with coverage
+        run: npm run test:coverage

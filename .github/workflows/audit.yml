@@ -1,4 +1,4 @@
-name: Lint
+name: Security Audit
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,8 +19,5 @@ jobs:
 
       - run: npm ci
 
-      - name: TypeScript type check
-        run: npx tsc --noEmit
-
-      - name: ESLint
-        run: npm run lint
+      - name: npm audit
+        run: npm audit --omit=dev

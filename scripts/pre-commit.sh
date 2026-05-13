@@ -70,6 +70,7 @@ echo ""
 
 run_step "Type Check" npx tsc --noEmit
 run_step "Lint" npm run --silent lint
+run_step "Test" npm run --silent test:run
 run_step "Build" npm run --silent build
 
 # ── Security audit ───────────────────────────────────────────────────

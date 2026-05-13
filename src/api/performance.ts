@@ -1,7 +1,11 @@
 import { apiGet } from "./client";
-import type { IntegrationService, SystemPerformance } from "../types";
+import type { IntegrationService, PerformanceSummary, SystemPerformance } from "../types";
 
 export const performanceApi = {
+    getSummary(): Promise<PerformanceSummary> {
+        return apiGet<PerformanceSummary>("/performance/summary");
+    },
+
     getVerifierMetrics(): Promise<unknown> {
         return apiGet("/performance/verifiers");
     },

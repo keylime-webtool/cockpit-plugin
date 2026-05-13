@@ -33,6 +33,16 @@ export interface IntegrationService {
     latency_ms?: number;
 }
 
+export interface PerformanceSummary {
+    verifier_reachable: boolean;
+    verifier_latency_ms: number | null;
+    circuit_breaker_state: "closed" | "open" | "half_open";
+    agent_count: number;
+    estimated_attestation_rate: number | null;
+    capacity_utilization_pct: number | null;
+    database_status: string;
+}
+
 export interface SystemPerformance {
     cpu_percent: number;
     memory_percent: number;

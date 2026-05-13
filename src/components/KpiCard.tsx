@@ -3,15 +3,30 @@ import {
     Card, CardTitle, CardBody,
 } from "@patternfly/react-core";
 
+type KpiVariant = "default" | "success" | "warning" | "danger";
+
+const VARIANT_COLORS: Record<KpiVariant, string | undefined> = {
+    default: undefined,
+    success: "var(--pf-t--global--color--status--success--default)",
+    warning: "var(--pf-t--global--color--status--warning--default)",
+    danger: "var(--pf-t--global--color--status--danger--default)",
+};
+
 interface KpiCardProps {
     title: string;
     value: string | number;
     subtitle?: string;
+    variant?: KpiVariant;
     linkTo?: string;
 }
 
-export function KpiCard({ title, value, subtitle, linkTo }: KpiCardProps) {
+export function KpiCard({ title, value, subtitle, variant = "default", linkTo }: KpiCardProps) {
     const handleClick = linkTo ? () => cockpit.location.go([linkTo]) : undefined;
+    const borderColor = VARIANT_COLORS[variant];
+    const cardStyle: React.CSSProperties = {
+        ...(linkTo ? { cursor: "pointer" } : {}),
+        ...(borderColor ? { borderLeft: `4px solid ${borderColor}` } : {}),
+    };
 
     return (
         <Card
@@ -19,7 +34,7 @@ export function KpiCard({ title, value, subtitle, linkTo }: KpiCardProps) {
             isClickable={!!linkTo}
             isSelectable={!!linkTo}
             onClick={handleClick}
-            style={linkTo ? { cursor: "pointer" } : undefined}
+            style={cardStyle}
         >
             <CardTitle>{title}</CardTitle>
             <CardBody>

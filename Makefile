@@ -73,7 +73,7 @@ RPMBUILD_ARGS = \
 
 rpm: $(TARFILE) $(SPEC)
 	mkdir -p $(CURDIR)/output $(CURDIR)/rpmbuild
-	rpmbuild -bb $(RPMBUILD_ARGS) $(SPEC)
+	rpmbuild -bb --nodeps $(RPMBUILD_ARGS) $(SPEC)
 	find $(CURDIR)/output -name '*.rpm' -printf '%f\n' -exec mv {} . \;
 	rm -rf $(CURDIR)/rpmbuild $(CURDIR)/output $(CURDIR)/build
 

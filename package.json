@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.46.0",
     "@vitest/coverage-v8": "^4.1.10",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "esbuild-sass-plugin": "^3.7.0",
     "eslint": "^8.57.1",
     "eslint-plugin-jsx-a11y": "^6.10.0",
